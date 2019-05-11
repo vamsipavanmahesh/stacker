@@ -6,12 +6,15 @@ class StackExchange
 
   def get_questions
     path = 'https://api.stackexchange.com/2.2/questions'
-    send_request(lambda {
+    response = send_request(lambda {
       HTTParty.get(
         path,
         options
       ) # timeout can be read from config
     }, path)
+    raise BadGatewayError.new(gateway: 'stack overflow', path: path) if response.code >= 400
+
+    response
   end
 
   private

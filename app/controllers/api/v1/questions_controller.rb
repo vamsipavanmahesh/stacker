@@ -6,6 +6,9 @@ module Api
         render json: {
           questions: stack_exchange_service.get_questions
         }, status: :ok
+
+        rescue BadGatewayError, GatewayTimeoutError
+          # read it from cache
       end
 
       private
