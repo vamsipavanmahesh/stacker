@@ -3,12 +3,15 @@ module Api
     # Questions controller integrating with the stack exchange service
     class QuestionsController < ApplicationController
       def index
+        questions_response = stack_exchange_service.get_questions
         render json: {
-          questions: stack_exchange_service.get_questions
+          questions: questions_response
         }, status: :ok
 
+        # can be async, if redis is seeming to take time
+        REDIS_CLIENT.set('questions_path'+query_params.to_s, JSON.dump(questions_response.parsed_response))
         rescue BadGatewayError, GatewayTimeoutError
-          # read it from cache
+          render json: { questions: JSON.parse(REDIS_CLIENT.get('questions_path'+query_params.to_s)) }, status: :ok
       end
 
       private

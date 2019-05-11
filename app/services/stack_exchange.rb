@@ -10,7 +10,7 @@ class StackExchange
       HTTParty.get(
         path,
         options
-      ) # timeout can be read from config
+      )
     }, path)
     raise BadGatewayError.new(gateway: 'stack overflow', path: path) if response.code >= 400
 
@@ -20,7 +20,7 @@ class StackExchange
   private
 
   def options
-    { query: @query_params, timeout: 5 }
+    { query: @query_params, timeout: 5 } # timeout can be read from config
   end
 
   def send_request(request, path)
