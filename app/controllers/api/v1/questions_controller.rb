@@ -11,13 +11,17 @@ module Api
         # can be async, if redis is seeming to take time
         REDIS_CLIENT.set('questions_path'+query_params.to_s, JSON.dump(questions_response.parsed_response))
         rescue BadGatewayError, GatewayTimeoutError
-          render json: { questions: JSON.parse(REDIS_CLIENT.get('questions_path'+query_params.to_s)) }, status: :ok
+          if REDIS_CLIENT.get('questions_path'+query_params.to_s)
+            render json: { questions: JSON.parse(REDIS_CLIENT.get('questions_path'+query_params.to_s)) }, status: :ok
+          else
+            render json: { error: { message: 'Cannot process the request' } }, status: 422
+          end
       end
 
       private
 
       def query_params
-        params.permit(:sort, :order, :site, :page).to_h
+        params.permit(:sort, :order, :site, :page, :tagged).to_h
       end
 
       def stack_exchange_service
