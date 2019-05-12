@@ -26,6 +26,8 @@ gem 'puma', '~> 3.7'
 # gem 'rack-cors'
 gem 'redis-rails'
 
+gem 'rack-cors'
+
 gem 'httparty', '0.16.4'
 
 group :development, :test do
